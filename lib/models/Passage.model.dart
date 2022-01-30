@@ -60,7 +60,7 @@ class PassageAttributes {
     publishedAt: json["publishedAt"] == null ? null : DateTime.parse(json["publishedAt"]),
     start: json["start"] == null ? null : DateTime.parse(json["start"]),
     end: json["end"] == null ? null : DateTime.parse(json["end"]),
-    artiste: json["artiste"] == null ? null : Artiste.fromMap(json["artiste"]),
+    artiste: json["artiste"] == null ? null : Artiste.fromMap(json["artiste"]["data"]),
     stand: json["stand"] == null ? null : Stand.fromMap(json["stand"]),
   );
 

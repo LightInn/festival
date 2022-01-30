@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:festival/models/Festival.model.dart';
+import 'package:festival/pages/stands_list.dart';
 import 'package:festival/services/FestivalService.dart';
 import 'package:flutter/material.dart';
+
+import 'crud/options_crud_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -58,7 +61,11 @@ class _WelcomePageState extends State<WelcomePage> {
                                       style: const TextStyle(fontSize: 32),
                                     ),
                                     ElevatedButton(
-                                        onPressed: () => {},
+                                        onPressed: () => {
+                                              Navigator.of(context).push(
+                                                  _createRoute(
+                                                      snapshot.data![i]))
+                                            },
                                         child: Text("Acceder"))
                                   ],
                                 ),
@@ -72,11 +79,33 @@ class _WelcomePageState extends State<WelcomePage> {
                   }),
             ),
           ),
-          Text("Options"),
+          ElevatedButton(
+              onPressed: () =>
+                  {Navigator.of(context).pushReplacementNamed("/options")},
+              child: Text("Options")),
         ],
       ),
     );
   }
+}
+
+Route _createRoute(Festival festival) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        StandsList(festival),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
 
 Widget _buildCarouselItem(

@@ -73,7 +73,7 @@ class StandAttributes {
         passages: json["passages"] == null
             ? null
             : List<Passage>.from(
-                json["passages"].map((x) => Passage.fromMap(x))),
+                json["passages"]["data"].map((x) => Passage.fromMap(x))),
         festival:
             json["event"] == null ? null : Festival.fromMap(json["event"]),
       );

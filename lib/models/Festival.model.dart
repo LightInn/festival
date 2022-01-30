@@ -74,7 +74,7 @@ class Attributes {
           : DateTime.parse(json["publishedAt"]),
       stand: json["stands"] == null
           ? null
-          : List<Stand>.from(json["stands"].map((x) => Stand.fromMap(x))));
+          : List<Stand>.from(json["stands"]["data"].map((x) => Stand.fromMap(x))));
 
   Map<String, dynamic> toMap() => {
         "Name": name == null ? null : name,

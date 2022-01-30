@@ -15,7 +15,7 @@ Future<List<Festival>> festivalGetAll() async {
   FlutterSecureStorage storage = const FlutterSecureStorage();
   var jwt = await storage.read(key: "jwt");
 
-  var response = await http.get(Uri.parse(urlBase + "/api/events"), headers: {
+  var response = await http.get(Uri.parse(urlBase + "/api/events?populate[0]=stands&populate[1]=stands.passages&populate[2]=stands.passages.artiste"), headers: {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $jwt',
   });

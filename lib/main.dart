@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:festival/pages/crud/options_crud_page.dart';
 import 'package:festival/pages/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/login': (BuildContext) => LoginPage(),
         '/register': (BuildContext) => RegisterPage(),
         '/home': (BuildContext) => WelcomePage(),
+        '/options': (BuildContext) => OptionsCrudPage(),
       },
     );
   }
