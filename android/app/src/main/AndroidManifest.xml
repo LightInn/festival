@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.festival">
+    package="com.example.festival2">
    <application
-        android:label="festival"
+        android:label="festival2"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,19 +1,15 @@
-import 'dart:developer';
-
-import 'package:festival/pages/crud/options_crud_page.dart';
-import 'package:festival/pages/register_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:festival2/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:festival/pages/welcome_page.dart';
-import 'package:festival/pages/login_page.dart';
-import 'package:flutter/material.dart';
-import 'package:simple_animations/simple_animations.dart';
+import 'package:requests/requests.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'constants.dart';
+import 'components/splash_screen.dart';
+import 'pages/login_page.dart';
+import 'pages/welcome_page.dart';
 
-void main() {
+Future<void> main() async {
+  await initHiveForFlutter();
+
   runApp(const MyApp());
 }
 
@@ -22,53 +18,45 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Festiz',
-      theme: ThemeData(
-        primaryColor: kPrimaryColor,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: SplashScreen(),
-      routes: <String, WidgetBuilder>{
-        '/login': (BuildContext) => LoginPage(),
-        '/register': (BuildContext) => RegisterPage(),
-        '/home': (BuildContext) => WelcomePage(),
-        '/options': (BuildContext) => OptionsCrudPage(),
-      },
+    final HttpLink httpLink = HttpLink(
+      'https://festival.brev.al/graphql/',
     );
-  }
-}
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+    final AuthLink authLink = AuthLink(
+      getToken: () async => await JwtToken().getToken(),
+    );
 
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
+    final Link link = authLink.concat(httpLink);
 
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    _startApp();
-    super.initState();
-  }
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: HiveStore()),
+      ),
+    );
 
-  Future<void> _startApp() async {
-    final storage = FlutterSecureStorage();
-    String? jwt = await storage.read(key: "jwt");
-    log("jwt sauvegarder : " + (jwt != null ? jwt : "aucun"));
-    if (jwt == null) {
-      Navigator.of(context).pushReplacementNamed("/login");
-    } else {
-      Navigator.of(context).pushReplacementNamed("/home");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+    return GraphQLProvider(
+      client: client,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Festival',
+        theme: ThemeData(
+          primaryColor: Colors.blue,
+          scaffoldBackgroundColor: Colors.white,
+        ),
+        // home: SplashScreen(),
+        // todo : Mettre SplashScreen
+        home: WelcomePage(),
+        routes: <String, WidgetBuilder>{
+          '/login': (BuildContext) => LoginPage(
+                title: 'Login',
+              ),
+          // '/register': (BuildContext) => RegisterPage(),
+          '/home': (BuildContext) => WelcomePage(),
+          // '/options': (BuildContext) => OptionsCrudPage(),
+        },
+      ),
     );
   }
 }

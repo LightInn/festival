@@ -1,182 +1,147 @@
-import 'dart:developer';
-import 'package:festival/services/AuthentificationService.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+import 'register_page.dart';
+// import 'package:login_ui/register_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key, required this.title}) : super(key: key);
+  final String title;
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final storage = FlutterSecureStorage();
+  final _formKey = GlobalKey<FormState>();
+  var rememberValue = false;
 
   @override
   Widget build(BuildContext context) {
-    var wid = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              // ! 0x00FFFFFF
-              Container(
-                color: const Color(0xffdbc5ff),
-                // color: const Color(0xFFC73800),
-                width: wid,
-                height: 350,
-                child: SvgPicture.asset(
-                  "images/wave8.svg",
-                  fit: BoxFit.fill,
-                ),
-              )
-            ],
-          ),
-          // ! Here input
-
-          Expanded(
-            child: Container(
-              color: const Color(0xffdbc5ff),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    Container(
-                        width: double.infinity,
-                        height: 240,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 2),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 2),
-                        decoration: const BoxDecoration(
-                            // border: Border.all(
-                            //     color: const Color(0xff4f1ed2), width: 1),
-                            // boxShadow: const [
-                            //   BoxShadow(
-                            //       color: Color(0xff4f1ed2),
-                            //       blurRadius: 10,
-                            //       offset: Offset(1, 1)),
-                            // ],
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.email_outlined),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: TextFormField(
-                                      controller: _emailController,
-                                      maxLines: 1,
-                                      decoration: const InputDecoration(
-                                        label: Text(" Email ..."),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Divider(
-                              height: 5,
-                              thickness: 3,
-                              indent: 50,
-                              endIndent: 50,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.password_outlined),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: TextFormField(
-                                      controller: _passwordController,
-                                      maxLines: 1,
-                                      decoration: const InputDecoration(
-                                        label: Text(" Password ..."),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 22, right: 22),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          login(_emailController.text, _passwordController.text)
-                              .then((value) => {
-                                    log("jwt recu = " + (value.jwt ?? "null")),
-                                    storage.write(key: 'jwt', value: value.jwt)
-                                  })
-                              .then((value) =>
-                                  Navigator.of(context).pushNamed("/home"));
-                        },
-                        style: ElevatedButton.styleFrom(
-                            onPrimary: const Color(0xff4f1ed2),
-                            shadowColor: const Color(0xff4f1ed2),
-                            elevation: 18,
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15))),
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                colors: [Color(0xff4f1ed2), Color(0xff4f1ed2)]),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Container(
-                            width: wid - 20,
-                            height: 50,
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 30),
-                      child: TextButton(
-                        onPressed: () =>
-                            {Navigator.of(context).pushNamed("/register")},
-                        child: Text("SingUp if don't have account ",
-                            style: TextStyle(
-                              color: Colors.white,
-                              letterSpacing: 2,
-                            )),
-                      ),
-                    )
-                  ],
-                ),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Sign in',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
               ),
             ),
-          ),
-        ],
+            const SizedBox(
+              height: 60,
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: (value) => EmailValidator.validate(value!)
+                        ? null
+                        : "Please enter a valid email",
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your email',
+                      prefixIcon  : const Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                    maxLines: 1,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock),
+                      hintText: 'Enter your password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  CheckboxListTile(
+                    title: const Text("Remember me"),
+                    contentPadding: EdgeInsets.zero,
+                    value: rememberValue,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onChanged: (newValue) {
+                      setState(() {
+                        rememberValue = newValue!;
+                      });
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+
+
+                        // login(_emailController.text, _passwordController.text)
+                        //     .then((value) => {
+                        //   log("jwt recu = " + (value.jwt ?? "null")),
+                        //   storage.write(key: 'jwt', value: value.jwt)
+                        // })
+                        //     .then((value) =>
+                        //     Navigator.of(context).pushNamed("/home"));
+
+
+
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
+                    ),
+                    child: const Text(
+                      'Sign in',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Not registered yet?'),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                              const RegisterPage(title: 'Register UI'),
+                            ),
+                          );
+                        },
+                        child: const Text('Create an account'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

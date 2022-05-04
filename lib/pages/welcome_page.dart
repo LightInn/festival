@@ -1,12 +1,6 @@
-import 'dart:developer';
-import 'dart:ui';
-
-import 'package:festival/models/Festival.model.dart';
-import 'package:festival/pages/stands_list.dart';
-import 'package:festival/services/FestivalService.dart';
 import 'package:flutter/material.dart';
-
-import 'crud/options_crud_page.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -16,111 +10,105 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  late int _index = 1;
-
-  @override
-  void initState() {
-    // _startApp();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text("Festival"),
-          Center(
-            child: SizedBox(
-              height: 350, // card height
-              child: FutureBuilder<List<Festival>>(
-                  future: festivalGetAll(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      log("has data");
-                      return PageView.builder(
-                        itemCount: snapshot.data!.length,
-                        controller: PageController(
-                            viewportFraction: 0.7, initialPage: _index),
-                        onPageChanged: (int index) =>
-                            setState(() => _index = index),
-                        itemBuilder: (_, i) {
-                          return Transform.scale(
-                            scale: i == _index ? 1 : 0.85,
-                            child: Card(
-                              elevation: 6,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "${snapshot.data![i].attributes!.name}\nDate : du ${snapshot.data![i].attributes!.startDate} au ${snapshot.data![i].attributes!.endDate}\n Emplacement : ${snapshot.data![i].attributes!.location} ",
-                                      style: const TextStyle(fontSize: 32),
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () => {
-                                              Navigator.of(context).push(
-                                                  _createRoute(
-                                                      snapshot.data![i]))
-                                            },
-                                        child: Text("Acceder"))
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return CircularProgressIndicator();
-                  }),
+    final List<String> titles = [
+      "RED",
+      "YELLOW",
+      "BLACK",
+      "CYAN",
+      "BLUE",
+      "GREY",
+    ];
+
+    final List<Widget> images = [
+      Container(
+        color: Colors.red,
+      ),
+      Container(
+        color: Colors.yellow,
+      ),
+      Container(
+        color: Colors.black,
+      ),
+      Container(
+        color: Colors.cyan,
+      ),
+      Container(
+        color: Colors.blue,
+      ),
+      Container(
+        color: Colors.grey,
+      ),
+    ];
+
+    String readRepositories = """query{me{email}}""";
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Query(
+              options: QueryOptions(
+                document: gql(readRepositories),
+                // this is the query string you just created
+                variables: {
+                  'nRepositories': 50,
+                }
+              ),
+              // Just like in apollo refetch() could be used to manually trigger a refetch
+              // while fetchMore() can be used for pagination purpose
+              builder: (QueryResult result,
+                  {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return Text(result.exception.toString());
+                }
+
+                if (result.isLoading) {
+                  return const Text('Loading');
+                }
+
+                List? repositories =
+                    result.data?['viewer']?['repositories']?['nodes'];
+
+                if (repositories == null) {
+                  return const Text('No repositories');
+                }
+
+                return ListView.builder(
+                    itemCount: repositories.length,
+                    itemBuilder: (context, index) {
+                      final repository = repositories[index];
+
+                      return Text(repository['name'] ?? '');
+                    });
+              },
             ),
-          ),
-          ElevatedButton(
-              onPressed: () =>
-                  {Navigator.of(context).pushReplacementNamed("/options")},
-              child: Text("Options")),
-        ],
+            Expanded(
+              child: Container(
+                child: VerticalCardPager(
+                    titles: titles,
+                    // required
+                    images: images,
+                    // required
+                    textStyle: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                    // optional
+                    onPageChanged: (page) {
+                      // optional
+                    },
+                    onSelectedItem: (index) {
+                      // optional
+                    },
+                    initialPage: 0,
+                    // optional
+                    align: ALIGN.CENTER // optional
+                    ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-Route _createRoute(Festival festival) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        StandsList(festival),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.0, 1.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
-
-Widget _buildCarouselItem(
-    BuildContext context, int carouselIndex, int itemIndex) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 4.0),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-      ),
-    ),
-  );
-}
-
-// _buildCarousel(int carouselIndex) {
-//   return ;
-// }
