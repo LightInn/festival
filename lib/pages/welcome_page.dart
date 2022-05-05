@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
+
+import '../utils/graphql_request.dart';
+import '../utils/jwt_token.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -66,20 +71,16 @@ class _WelcomePageState extends State<WelcomePage> {
       ),
     ];
 
-    String readRepositories = """query{me{email}}""";
-
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: <Widget>[
             Query(
-              options: QueryOptions(document: gql(readRepositories),
-                  // this is the query string you just created
-                  variables: {
-                    'nRepositories': 50,
-                  }),
-              // Just like in apollo refetch() could be used to manually trigger a refetch
-              // while fetchMore() can be used for pagination purpose
+              options: QueryOptions(
+                fetchPolicy: FetchPolicy.cacheAndNetwork,
+                document: gql(GraphqlRequest().me)
+              ),
               builder: (QueryResult result,
                   {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
@@ -90,21 +91,37 @@ class _WelcomePageState extends State<WelcomePage> {
                   return const Text('Loading');
                 }
 
-                List? repositories =
-                    result.data?['viewer']?['repositories']?['nodes'];
+                log(result.data.toString());
 
-                if (repositories == null) {
-                  return Text(
-                      result.data?['me']?['email'].toString() ?? "test");
+                if (result.data?["me"]?["role"]?["name"] == "Admin") {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          JwtToken().deleteToken();
+                          Navigator.of(context).pushNamed("/login");
+                        },
+                        child: Text(
+                            result.data?['me']?['email'].toString() ?? "test"),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed("/admin");
+
+                          }, child: Text("Admin panel"))
+                    ],
+                  );
+                } else {
+                  return TextButton(
+                    onPressed: () {
+                      JwtToken().deleteToken();
+                      Navigator.of(context).pushNamed("/login");
+                    },
+                    child:
+                        Text(result.data?['me']?['email'].toString() ?? "test"),
+                  );
                 }
-
-                return ListView.builder(
-                    itemCount: repositories.length,
-                    itemBuilder: (context, index) {
-                      final repository = repositories[index];
-
-                      return Text(repository['name'] ?? '');
-                    });
               },
             ),
             Expanded(
@@ -115,8 +132,9 @@ class _WelcomePageState extends State<WelcomePage> {
                     images: images,
                     // required
                     textStyle: const TextStyle(
-                      fontSize: 1,
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        fontSize: 1,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
                     // optional
                     onPageChanged: (page) {
                       // optional
@@ -126,7 +144,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
                       // optional
                     },
-                    initialPage: 0,
+                    initialPage: titles.length,
                     // optional
                     align: ALIGN.CENTER // optional
                     ),

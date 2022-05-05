@@ -1,13 +1,10 @@
-import 'dart:developer';
-
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../utils/graphql_request.dart';
 import '../utils/jwt_token.dart';
 import 'register_page.dart';
-// import 'package:login_ui/register_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -25,9 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     String? identifier;
     String? password;
-
-    String loginMutation =
-        """mutation(\$identifier:String!,\$password:String!){login(input:{identifier:\$identifier,password:\$password }){jwt,user{email}}}""";
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -102,24 +96,19 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Mutation(
-                      options: MutationOptions(document: gql(loginMutation)
-                          // this is the mutation string you just created
+                      options:
+                          MutationOptions(document: gql(GraphqlRequest().login)
+                              // this is the mutation string you just created
 
-                          ),
+                              ),
                       builder: (
                         RunMutation runMutation,
                         QueryResult? result,
                       ) {
-
-                        if(result?.exception != null){
-                          log(result?.exception.toString() ?? "error error");
-                        }
-
-
                         if (result?.data == null) {
                           return ElevatedButton(
                             onPressed: () {
@@ -133,9 +122,10 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
+                              padding:
+                                  const EdgeInsets.fromLTRB(40, 15, 40, 15),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Sign in',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -150,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           Navigator.of(context).pushNamed("/home");
 
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                       }),
                   const SizedBox(
