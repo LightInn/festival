@@ -7,7 +7,9 @@ class JwtToken {
 
   getToken() async {
     String? jwt = await storage.read(key: "jwt");
-    jwt = jwt ?? "Bearer null";
+    jwt = jwt ?? "Bearer ";
+    // todo remetre null
+    // jwt = jwt ?? "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjUxNzAyNDAxLCJleHAiOjE2NTQyOTQ0MDF9.aTyLsWCCwZ1qubfPNJD8W7D94iMhgN8zux8huzSmYK0";
     log("getToken: $jwt");
     return jwt;
   }

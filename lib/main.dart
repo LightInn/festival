@@ -1,3 +1,4 @@
+import 'package:festival2/pages/register_page.dart';
 import 'package:festival2/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
 import 'package:requests/requests.dart';
@@ -45,14 +46,13 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.blue,
           scaffoldBackgroundColor: Colors.white,
         ),
-        // home: SplashScreen(),
         // todo : Mettre SplashScreen
-        home: WelcomePage(),
+        home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext) => LoginPage(
                 title: 'Login',
               ),
-          // '/register': (BuildContext) => RegisterPage(),
+          '/register': (BuildContext) => RegisterPage(title: 'register',),
           '/home': (BuildContext) => WelcomePage(),
           // '/options': (BuildContext) => OptionsCrudPage(),
         },

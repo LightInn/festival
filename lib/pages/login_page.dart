@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../utils/jwt_token.dart';
 import 'register_page.dart';
 // import 'package:login_ui/register_screen.dart';
 
@@ -19,6 +23,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    String? identifier;
+    String? password;
+
+    String loginMutation =
+        """mutation(\$identifier:String!,\$password:String!){login(input:{identifier:\$identifier,password:\$password }){jwt,user{email}}}""";
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -42,13 +52,16 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   TextFormField(
+                    onSaved: (String? value) {
+                      identifier = value;
+                    },
                     validator: (value) => EmailValidator.validate(value!)
                         ? null
                         : "Please enter a valid email",
                     maxLines: 1,
                     decoration: InputDecoration(
                       hintText: 'Enter your email',
-                      prefixIcon  : const Icon(Icons.email),
+                      prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -58,6 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextFormField(
+                    onSaved: (String? value) {
+                      password = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
@@ -86,36 +102,57 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                  Mutation(
+                      options: MutationOptions(document: gql(loginMutation)
+                          // this is the mutation string you just created
+
+                          ),
+                      builder: (
+                        RunMutation runMutation,
+                        QueryResult? result,
+                      ) {
+
+                        if(result?.exception != null){
+                          log(result?.exception.toString() ?? "error error");
+                        }
 
 
-                        // login(_emailController.text, _passwordController.text)
-                        //     .then((value) => {
-                        //   log("jwt recu = " + (value.jwt ?? "null")),
-                        //   storage.write(key: 'jwt', value: value.jwt)
-                        // })
-                        //     .then((value) =>
-                        //     Navigator.of(context).pushNamed("/home"));
+                        if (result?.data == null) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState?.save();
 
+                                runMutation({
+                                  'identifier': identifier,
+                                  'password': password,
+                                });
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
+                            ),
+                            child: Text(
+                              'Sign in',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        } else {
+                          String? jwt = result?.data?['login']?['jwt'];
 
+                          if (jwt != null) {
+                            JwtToken().setToken("Bearer " + jwt);
+                          }
+                          Navigator.of(context).pushNamed("/home");
 
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
-                    ),
-                    child: const Text(
-                      'Sign in',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                          return CircularProgressIndicator();
+                        }
+                      }),
                   const SizedBox(
                     height: 20,
                   ),
@@ -129,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                              const RegisterPage(title: 'Register UI'),
+                                  const RegisterPage(title: 'Register UI'),
                             ),
                           );
                         },
