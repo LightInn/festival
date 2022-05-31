@@ -1,6 +1,5 @@
 import 'package:festival2/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 
 class SplashScreen extends StatefulWidget {

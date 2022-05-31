@@ -28,44 +28,44 @@ class _WelcomePageState extends State<WelcomePage> {
 
     final List<Widget> images = [
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.red,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.yellow,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.cyan,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
       Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: const BoxDecoration(
             color: Colors.grey,
             borderRadius: BorderRadius.all(Radius.circular(20))),
       ),
@@ -109,7 +109,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           onPressed: () {
                             Navigator.of(context).pushNamed("/admin");
 
-                          }, child: Text("Admin panel"))
+                          }, child: const Text("Admin panel"))
                     ],
                   );
                 } else {

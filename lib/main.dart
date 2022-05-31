@@ -5,7 +5,6 @@ import 'package:festival2/pages/crud/festival/festival_new_page.dart';
 import 'package:festival2/pages/register_page.dart';
 import 'package:festival2/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
-import 'package:requests/requests.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'components/splash_screen.dart';
@@ -59,25 +58,25 @@ class MyApp extends StatelessWidget {
           '/register': (BuildContext) => const RegisterPage(
                 title: 'register',
               ),
-          '/home': (BuildContext) => WelcomePage(),
+          '/home': (BuildContext) => const WelcomePage(),
 
-          '/admin': (BuildContext) => AdminPanelPage(),
+          '/admin': (BuildContext) => const AdminPanelPage(),
 
-          '/festival': (BuildContext) => FestivalListePage(),
-          '/festival/edit': (BuildContext) => FestivalEditPage(),
-          '/festival/new': (BuildContext) => FestivalNewPage(),
+          '/festival': (BuildContext) => const FestivalListePage(),
+          '/festival/edit': (BuildContext) => const FestivalEditPage(),
+          '/festival/new': (BuildContext) => const FestivalNewPage(),
 
-          '/stand': (BuildContext) => WelcomePage(),
-          '/stand/edit': (BuildContext) => WelcomePage(),
-          '/stand/new': (BuildContext) => WelcomePage(),
+          '/stand': (BuildContext) => const WelcomePage(),
+          '/stand/edit': (BuildContext) => const WelcomePage(),
+          '/stand/new': (BuildContext) => const WelcomePage(),
 
-          '/passage': (BuildContext) => WelcomePage(),
-          '/passage/edit': (BuildContext) => WelcomePage(),
-          '/passage/new': (BuildContext) => WelcomePage(),
+          '/passage': (BuildContext) => const WelcomePage(),
+          '/passage/edit': (BuildContext) => const WelcomePage(),
+          '/passage/new': (BuildContext) => const WelcomePage(),
 
-          '/artiste': (BuildContext) => WelcomePage(),
-          '/artiste/edit': (BuildContext) => WelcomePage(),
-          '/artiste/new': (BuildContext) => WelcomePage(),
+          '/artiste': (BuildContext) => const WelcomePage(),
+          '/artiste/edit': (BuildContext) => const WelcomePage(),
+          '/artiste/new': (BuildContext) => const WelcomePage(),
 
           // '/options': (BuildContext) => OptionsCrudPage(),
         },
