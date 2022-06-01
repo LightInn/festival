@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -17,60 +18,6 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
-    final List<String> titles = [
-      "Festival de Canne",
-      "Le festival Tomorrowland",
-      "Le festival Rock",
-      "Le festival Coachellas",
-      "Burning Man",
-      "Pitchfork Music Festival",
-    ];
-
-    final List<Widget> images = [
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.yellow,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.cyan,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: const BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-      ),
-    ];
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
@@ -78,9 +25,8 @@ class _WelcomePageState extends State<WelcomePage> {
           children: <Widget>[
             Query(
               options: QueryOptions(
-                fetchPolicy: FetchPolicy.cacheAndNetwork,
-                document: gql(GraphqlRequest().me)
-              ),
+                  fetchPolicy: FetchPolicy.cacheAndNetwork,
+                  document: gql(GraphqlRequest().me)),
               builder: (QueryResult result,
                   {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
@@ -108,8 +54,8 @@ class _WelcomePageState extends State<WelcomePage> {
                       ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pushNamed("/admin");
-
-                          }, child: const Text("Admin panel"))
+                          },
+                          child: const Text("Admin panel"))
                     ],
                   );
                 } else {
@@ -126,28 +72,78 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
             Expanded(
               child: Container(
-                child: VerticalCardPager(
-                    titles: titles,
-                    // required
-                    images: images,
-                    // required
-                    textStyle: const TextStyle(
-                        fontSize: 1,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                    // optional
-                    onPageChanged: (page) {
-                      // optional
-                    },
-                    onSelectedItem: (index) {
-                      Navigator.of(context).pushNamed("/register");
+                child: Query(
+                  options: QueryOptions(
+                      fetchPolicy: FetchPolicy.cacheAndNetwork,
+                      document: gql(GraphqlRequest().publicData)),
+                  builder: (QueryResult result,
+                      {VoidCallback? refetch, FetchMore? fetchMore}) {
+                    if (result.hasException) {
+                      return Text(result.exception.toString());
+                    }
 
-                      // optional
-                    },
-                    initialPage: titles.length,
-                    // optional
-                    align: ALIGN.CENTER // optional
-                    ),
+                    if (result.isLoading) {
+                      return const Text('Loading');
+                    }
+
+                    log(result.data.toString());
+
+                    if (result.data?["festivals"]?["data"] != null) {
+                      var festivalList = result.data?["festivals"]?["data"];
+
+                      var festivalNames = festivalList
+                          .map((i) => i["attributes"]?["name"].toString())
+                          .toList();
+
+                      List<String> festivalNamesList =
+                          new List<String>.from(festivalNames);
+
+                      List<Widget> festivalWidgetsList = festivalList
+                          .map<Widget>((i) => Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                decoration: BoxDecoration(
+                                    color: Color((math.Random().nextDouble() *
+                                                0xFFFFFF)
+                                            .toInt())
+                                        .withOpacity(1.0),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: Text(
+                                    i["attributes"]?["name"].toString() ??
+                                        "name"),
+                              ))
+                          .toList();
+
+                      return VerticalCardPager(
+                          titles: festivalNamesList,
+                          // required
+                          images: festivalWidgetsList,
+                          // required
+                          textStyle: const TextStyle(
+                              fontSize: 1,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                          // optional
+                          onPageChanged: (page) {
+                            // optional
+                          },
+                          onSelectedItem: (index) {
+                            Navigator.of(context).pushNamed("/register");
+
+                            // optional
+                          },
+                          initialPage: festivalNamesList.length,
+                          // optional
+                          align: ALIGN.CENTER // optional
+                          );
+                    } else {
+                      return Text("no data");
+                    }
+                  },
+                ),
               ),
             ),
           ],
