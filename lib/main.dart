@@ -1,7 +1,13 @@
 import 'package:festival2/pages/admin_panel_page.dart';
+import 'package:festival2/pages/crud/artiste/artiste_liste_page.dart';
+import 'package:festival2/pages/crud/artiste/artiste_new_page.dart';
 import 'package:festival2/pages/crud/festival/festival_edit_page.dart';
 import 'package:festival2/pages/crud/festival/festival_liste_page.dart';
 import 'package:festival2/pages/crud/festival/festival_new_page.dart';
+import 'package:festival2/pages/crud/passage/passage_liste_page.dart';
+import 'package:festival2/pages/crud/passage/passage_new_page.dart';
+import 'package:festival2/pages/crud/stands/stand_liste_page.dart';
+import 'package:festival2/pages/crud/stands/stand_new_page.dart';
 import 'package:festival2/pages/register_page.dart';
 import 'package:festival2/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
@@ -63,20 +69,16 @@ class MyApp extends StatelessWidget {
           '/admin': (BuildContext) => const AdminPanelPage(),
 
           '/festival': (BuildContext) => const FestivalListePage(),
-          '/festival/edit': (BuildContext) => const FestivalEditPage(),
           '/festival/new': (BuildContext) => const FestivalNewPage(),
 
-          '/stand': (BuildContext) => const WelcomePage(),
-          '/stand/edit': (BuildContext) => const WelcomePage(),
-          '/stand/new': (BuildContext) => const WelcomePage(),
+          '/stand': (BuildContext) => const StandListePage(),
+          '/stand/new': (BuildContext) => const StandNewPage(),
 
-          '/passage': (BuildContext) => const WelcomePage(),
-          '/passage/edit': (BuildContext) => const WelcomePage(),
-          '/passage/new': (BuildContext) => const WelcomePage(),
+          '/passage': (BuildContext) => const PassageListePage(),
+          '/passage/new': (BuildContext) => const PassageNewPage(),
 
-          '/artiste': (BuildContext) => const WelcomePage(),
-          '/artiste/edit': (BuildContext) => const WelcomePage(),
-          '/artiste/new': (BuildContext) => const WelcomePage(),
+          '/artiste': (BuildContext) => const ArtisteListePage(),
+          '/artiste/new': (BuildContext) => const ArtisteNewPage(),
 
           // '/options': (BuildContext) => OptionsCrudPage(),
         },
