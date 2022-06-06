@@ -57,7 +57,7 @@ class _ArtisteListePageState extends State<ArtisteListePage> {
                   child: Query(
                     options: QueryOptions(
                         fetchPolicy: FetchPolicy.cacheAndNetwork,
-                        document: gql(GraphqlRequest().publicData)),
+                        document: gql(GraphqlRequest().getAllArtiste)),
                     builder: (QueryResult result,
                         {VoidCallback? refetch, FetchMore? fetchMore}) {
                       if (result.hasException) {
@@ -70,8 +70,8 @@ class _ArtisteListePageState extends State<ArtisteListePage> {
 
                       log(result.data.toString());
 
-                      if (result.data?["festivals"]?["data"] != null) {
-                        var festivalList = result.data?["festivals"]?["data"];
+                      if (result.data?["artists"]?["data"] != null) {
+                        var festivalList = result.data?["artists"]?["data"];
 
                         List<Widget> festivalWidgetsList = festivalList
                             .map<Widget>(
@@ -86,18 +86,12 @@ class _ArtisteListePageState extends State<ArtisteListePage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => ArtisteEditPage(
-                                              dateDebut: i["attributes"]
-                                              ?["date_start"]
-                                                  .toString() ??
-                                                  DateTime.now().toString(),
-                                              dateFin: i["attributes"]?["date_end"]
-                                                  .toString() ??
-                                                  DateTime.now().toString(),
-                                              festivalName: i["attributes"]?["name"]
+
+                                              artistName: i["attributes"]?["name"]
                                                   .toString() ??
                                                   "festival",
-                                              localisation: i["attributes"]
-                                              ?["localisation"]
+                                              description: i["attributes"]
+                                              ?["description"]
                                                   .toString() ??
                                                   "Nantes",
                                               id: int.parse(i["id"]),
@@ -172,9 +166,9 @@ class _ArtisteListePageState extends State<ArtisteListePage> {
                                                         .fromSTEB(0, 4, 8, 0),
                                                     child: Text(
                                                       i["attributes"]
-                                                                  ?["date_start"]
+                                                                  ?["description"]
                                                               .toString() ??
-                                                          'date',
+                                                          'type',
                                                       textAlign: TextAlign.start,
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
@@ -189,40 +183,7 @@ class _ArtisteListePageState extends State<ArtisteListePage> {
                                               ),
                                             ),
                                           ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(0, 4, 0, 0),
-                                                child: Icon(
-                                                  Icons.chevron_right_rounded,
-                                                  color: Color(0xFF57636C),
-                                                  size: 24,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(0, 12, 4, 8),
-                                                child: Text(
-                                                  i["attributes"]?["date_end"]
-                                                          .toString() ??
-                                                      "nb_jour",
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(
-                                                    fontFamily: 'Outfit',
-                                                    color: Color(0xFF0F1113),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+
                                         ],
                                       ),
                                     ),

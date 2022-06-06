@@ -12,18 +12,14 @@ import 'artiste_liste_page.dart';
 
 class ArtisteEditPage extends StatefulWidget {
   final int id;
-  final String dateDebut;
-  final String dateFin;
-  final String festivalName;
-  final String localisation;
+  final String artistName;
+  final String description;
 
   const ArtisteEditPage(
       {Key? key,
       required this.id,
-      required this.dateDebut,
-      required this.dateFin,
-      required this.festivalName,
-      required this.localisation})
+      required this.artistName,
+      required this.description})
       : super(key: key);
 
   @override
@@ -31,22 +27,17 @@ class ArtisteEditPage extends StatefulWidget {
 }
 
 class _ArtisteEditPageState extends State<ArtisteEditPage> {
-  late DateTime dateDebut;
 
-  late DateTime dateFin;
-
-  late TextEditingController festivalNameController;
-  late TextEditingController localisationController;
+  late TextEditingController artistNameController;
+  late TextEditingController descriptionController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
 
-    dateDebut = DateTime.parse(widget.dateDebut);
-    dateFin = DateTime.parse(widget.dateFin);
-    localisationController = TextEditingController(text: widget.localisation);
-    festivalNameController = TextEditingController(text: widget.festivalName);
+    descriptionController = TextEditingController(text: widget.description);
+    artistNameController = TextEditingController(text: widget.artistName);
   }
 
   @override
@@ -114,7 +105,7 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
               child: TextFormField(
-                controller: festivalNameController,
+                controller: artistNameController,
                 obscureText: false,
                 decoration: InputDecoration(
                   labelText: 'Nom de l\'artiste',
@@ -161,81 +152,9 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Date de debut du festival : ',
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      child: OutlinedButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime(1900, 3, 5),
-                                maxTime: DateTime(2100, 6, 7),
-                                onChanged: (date) {
-                              dateDebut = date;
-                              print('change $date');
-                            }, onConfirm: (date) {
-                              setState(() {
-                                dateDebut = date;
-                                print('confirm $date');
-                              });
-                            }, currentTime: dateDebut, locale: LocaleType.fr);
-                          },
-                          child: Text(
-                            '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ',
-                            style: TextStyle(color: Colors.blue),
-                          ))),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Date de fin du festival : ',
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      child: OutlinedButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime(1900, 3, 5),
-                                maxTime: DateTime(2100, 6, 7),
-                                onChanged: (date) {
-                              dateFin = date;
-                              print('change $date');
-                            }, onConfirm: (date) {
-                              setState(() {
-                                dateFin = date;
-                                print('confirm $date');
-                              });
-                            }, currentTime: dateFin, locale: LocaleType.fr);
-                          },
-                          child: Text(
-                            '${dateFin.day.toString()}/${dateFin.month.toString()}/${dateFin.year.toString()} ',
-                            style: TextStyle(color: Colors.blue),
-                          ))),
-                ],
-              ),
-            ),
-            Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
               child: TextFormField(
-                controller: localisationController,
+                controller: descriptionController,
                 obscureText: false,
                 decoration: InputDecoration(
                   labelText: 'Localisation',
@@ -288,7 +207,7 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
                 children: [
                   Mutation(
                       options: MutationOptions(
-                          document: gql(GraphqlRequest().deleteFestival)
+                          document: gql(GraphqlRequest().deleteArtiste)
                           // this is the mutation string you just created
 
                           ),
@@ -347,7 +266,7 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
                       }),
                   Mutation(
                       options: MutationOptions(
-                          document: gql(GraphqlRequest().editFestival)
+                          document: gql(GraphqlRequest().editArtiste)
                           // this is the mutation string you just created
 
                           ),
@@ -371,12 +290,8 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
 
                                 runMutation({
                                   'id': widget.id,
-                                  'name': festivalNameController.text,
-                                  'date_start': DateFormat('yyyy-MM-dd')
-                                      .format(dateDebut),
-                                  'date_end':
-                                      DateFormat('yyyy-MM-dd').format(dateFin),
-                                  'localisation': localisationController.text
+                                  'name': artistNameController.text,
+                                  'description': descriptionController.text
                                 });
                               },
                               child: Text(

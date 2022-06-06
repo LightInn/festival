@@ -15,17 +15,15 @@ class ArtisteNewPage extends StatefulWidget {
 }
 
 class _ArtisteNewPageState extends State<ArtisteNewPage> {
-  late DateTime dateDebut = DateTime.now();
-  late DateTime dateFin = DateTime.now();
   late TextEditingController festivalNameController;
-  late TextEditingController localisationController;
+  late TextEditingController descriptionController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    localisationController = TextEditingController(text: 'Nantes');
-    festivalNameController = TextEditingController(text: 'Festival');
+    festivalNameController = TextEditingController(text: 'Nom d\'artiste');
+    descriptionController = TextEditingController(text: 'Genre de l\'artiste');
   }
 
   @override
@@ -68,7 +66,7 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
                   child: Text(
-                    'Créer un Festival',
+                    'Créer un Artiste',
                     style: TextStyle(
                       fontFamily: 'Lexend Deca',
                       color: Color(0xFF090F13),
@@ -88,7 +86,7 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
       body: SafeArea(
         child: Mutation(
             options:
-                MutationOptions(document: gql(GraphqlRequest().createFestival)
+                MutationOptions(document: gql(GraphqlRequest().createArtiste)
                     // this is the mutation string you just created
 
                     ),
@@ -114,14 +112,14 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
                         controller: festivalNameController,
                         obscureText: false,
                         decoration: InputDecoration(
-                          labelText: 'Nom du festival',
+                          labelText: 'Nom de l\'artiste',
                           labelStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                          hintText: 'Nom du festival',
+                          hintText: 'Nom de l\'artiste',
                           hintStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
@@ -159,97 +157,19 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Date de debut du festival : ',
-                            ),
-                          ),
-                          Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime(2100, 6, 7),
-                                        onChanged: (date) {
-                                      dateDebut = date;
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      setState(() {
-                                        dateDebut = date;
-                                        print('confirm $date');
-                                      });
-                                    },
-                                        currentTime: dateDebut,
-                                        locale: LocaleType.fr);
-                                  },
-                                  child: Text(
-                                    '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ',
-                                    style: TextStyle(color: Colors.blue),
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Date de fin du festival : ',
-                            ),
-                          ),
-                          Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime(2100, 6, 7),
-                                        onChanged: (date) {
-                                      dateFin = date;
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      setState(() {
-                                        dateFin = date;
-                                        print('confirm $date');
-                                      });
-                                    },
-                                        currentTime: dateFin,
-                                        locale: LocaleType.fr);
-                                  },
-                                  child: Text(
-                                    '${dateFin.day.toString()}/${dateFin.month.toString()}/${dateFin.year.toString()} ',
-                                    style: TextStyle(color: Colors.blue),
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
                       child: TextFormField(
-                        controller: localisationController,
+                        controller: descriptionController,
                         obscureText: false,
                         decoration: InputDecoration(
-                          labelText: 'Localisation',
+                          labelText: 'description',
                           labelStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                          hintText: 'localisation du festival',
+                          hintText: 'description de l\'artiste',
                           hintStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
@@ -297,13 +217,11 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
 
                             runMutation({
                               'name': festivalNameController.text,
-                              'date_start': DateFormat('yyyy-MM-dd').format(dateDebut),
-                              'date_end':  DateFormat('yyyy-MM-dd').format(dateFin),
-                              'localisation': localisationController.text
+                              'description': descriptionController.text
                             });
                           },
                           child: Text(
-                            'Créer le festival',
+                            'Créer l\'artiste',
                             style: TextStyle(
                               fontFamily: 'Lexend Deca',
                               color: Colors.white,

@@ -113,4 +113,80 @@ mutation(\$id: ID!) {
   }
 }
   """;
+
+
+
+  final String getAllArtiste = """
+query GetAllArtistes {
+  artists {
+    data {
+      id
+      attributes {
+        name
+        description
+      }
+    }
+  }
+}
+
+  """;
+
+
+  final String createArtiste = """
+mutation(
+  \$name: String!
+  \$description: String!
+) {
+  createArtist(
+    data: {
+      name: \$name
+      description: \$description
+      sitemap_exclude: false
+    }
+  ) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+  final String editArtiste = """
+mutation(
+  \$id: ID!
+  \$name: String!
+  \$description: String!
+) {
+  updateArtist(
+    id: \$id
+    data: {
+      name: \$name
+      description: \$description
+    }
+  ) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+  final String deleteArtiste = """
+mutation(\$id: ID!) {
+  deleteArtist(id: \$id) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+
+
+
+
+
 }
