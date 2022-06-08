@@ -57,7 +57,7 @@ class _StandListePageState extends State<StandListePage> {
                   child: Query(
                     options: QueryOptions(
                         fetchPolicy: FetchPolicy.cacheAndNetwork,
-                        document: gql(GraphqlRequest().publicData)),
+                        document: gql(GraphqlRequest().getAllStands)),
                     builder: (QueryResult result,
                         {VoidCallback? refetch, FetchMore? fetchMore}) {
                       if (result.hasException) {

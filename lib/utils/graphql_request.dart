@@ -114,8 +114,6 @@ mutation(\$id: ID!) {
 }
   """;
 
-
-
   final String getAllArtiste = """
 query GetAllArtistes {
   artists {
@@ -130,8 +128,6 @@ query GetAllArtistes {
 }
 
   """;
-
-
   final String createArtiste = """
 mutation(
   \$name: String!
@@ -185,8 +181,66 @@ mutation(\$id: ID!) {
 
   """;
 
+  final String getAllStands = """
+query GetAllArtistes {
+  artists {
+    data {
+      id
+      attributes {
+        name
+        description
+      }
+    }
+  }
+}
+
+  """;
+  final String createStands = """
+mutation(
+  \$name: String!
+  \$position: String!
+  \$festival :ID!
+) {
+  createStand(
+    data: {
+      name: \$name
+      position: \$position
+      festival: \$festival
+      sitemap_exclude: false
+    }
+  ) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+  final String editStands = """
+mutation(\$id: ID!, \$name: String!, \$position: String!, \$festival: ID!) {
+  updateStand(
+    id: \$id
+    data: { name: \$name, position: \$position, festival: \$festival }
+  ) {
+    data {
+      id
+    }
+  }
+}
 
 
 
+  """;
+  final String deleteStands = """
+mutation(\$id: ID!) {
+  deleteStand(id: \$id) {
+    data {
+      id
+    }
+  }
+}
 
+
+  """;
 }
