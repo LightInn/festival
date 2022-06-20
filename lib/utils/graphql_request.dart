@@ -182,13 +182,32 @@ mutation(\$id: ID!) {
   """;
 
   final String getAllStands = """
-query GetAllArtistes {
-  artists {
+query GetAllStands {
+  stands {
     data {
       id
       attributes {
         name
-        description
+        position
+        festival {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+
+  """;
+  final String getFestivalForStand = """
+query getFestivalForStand {
+  festivals {
+    data {
+      id
+      attributes {
+        name
       }
     }
   }

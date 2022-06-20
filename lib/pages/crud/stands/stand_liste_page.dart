@@ -70,8 +70,8 @@ class _StandListePageState extends State<StandListePage> {
 
                       log(result.data.toString());
 
-                      if (result.data?["festivals"]?["data"] != null) {
-                        var festivalList = result.data?["festivals"]?["data"];
+                      if (result.data?["stands"]?["data"] != null) {
+                        var festivalList = result.data?["stands"]?["data"];
 
                         List<Widget> festivalWidgetsList = festivalList
                             .map<Widget>(
@@ -172,9 +172,9 @@ class _StandListePageState extends State<StandListePage> {
                                                         .fromSTEB(0, 4, 8, 0),
                                                     child: Text(
                                                       i["attributes"]
-                                                                  ?["date_start"]
+                                                                  ?["position"]
                                                               .toString() ??
-                                                          'date',
+                                                          '',
                                                       textAlign: TextAlign.start,
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
@@ -205,22 +205,7 @@ class _StandListePageState extends State<StandListePage> {
                                                   size: 24,
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(0, 12, 4, 8),
-                                                child: Text(
-                                                  i["attributes"]?["date_end"]
-                                                          .toString() ??
-                                                      "nb_jour",
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(
-                                                    fontFamily: 'Outfit',
-                                                    color: Color(0xFF0F1113),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                ),
-                                              ),
+
                                             ],
                                           ),
                                         ],

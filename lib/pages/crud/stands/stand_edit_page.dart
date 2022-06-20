@@ -37,6 +37,7 @@ class _StandEditPageState extends State<StandEditPage> {
 
   late TextEditingController festivalNameController;
   late TextEditingController localisationController;
+  late int dropdownValue;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -47,6 +48,7 @@ class _StandEditPageState extends State<StandEditPage> {
     dateFin = DateTime.parse(widget.dateFin);
     localisationController = TextEditingController(text: widget.localisation);
     festivalNameController = TextEditingController(text: widget.festivalName);
+    dropdownValue = 1;
   }
 
   @override
@@ -281,6 +283,65 @@ class _StandEditPageState extends State<StandEditPage> {
                 ),
               ),
             ),
+            Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+
+                    Text("Festival Associer: "),
+
+                    Query(
+                        options: QueryOptions(
+                            fetchPolicy: FetchPolicy.cacheAndNetwork,
+                            document:
+                            gql(GraphqlRequest().getFestivalForStand)),
+                        builder: (QueryResult result,
+                            {VoidCallback? refetch, FetchMore? fetchMore}) {
+                          if (result.hasException) {
+                            return Text(result.exception.toString());
+                          }
+
+                          if (result.isLoading) {
+                            return const Text('Loading');
+                          }
+
+                          log(result.data.toString());
+
+                          if (result.data?["festivals"]?["data"] != null) {
+                            var festivalList =
+                            result.data?["festivals"]?["data"];
+
+
+
+
+                            List<DropdownMenuItem<int>> festivalDropItem =
+                            festivalList.map<DropdownMenuItem<int>>(
+                                    (i) => DropdownMenuItem<int>(
+                                  value:
+                                  int.parse(i["id"].toString()),
+                                  child: Text(i["attributes"]
+                                  ["name"]
+                                      .toString()),
+                                )).toList();
+
+                            return DropdownButton<int>(
+                              value: dropdownValue,
+                              items: festivalDropItem,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  dropdownValue = newValue ?? 1;
+                                });
+                              },
+                            );
+
+
+                          }
+
+                          return CircularProgressIndicator();
+                        }),
+                  ],
+                )),
             Align(
               alignment: AlignmentDirectional(0, 0.05),
               child: Row(

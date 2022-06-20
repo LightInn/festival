@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:festival2/pages/crud/stands/stand_edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,10 +16,9 @@ class StandNewPage extends StatefulWidget {
 }
 
 class _StandNewPageState extends State<StandNewPage> {
-  late DateTime dateDebut = DateTime.now();
-  late DateTime dateFin = DateTime.now();
   late TextEditingController festivalNameController;
   late TextEditingController localisationController;
+  late int dropdownValue;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -26,6 +26,7 @@ class _StandNewPageState extends State<StandNewPage> {
     super.initState();
     localisationController = TextEditingController(text: 'Nantes');
     festivalNameController = TextEditingController(text: 'Festival');
+    dropdownValue = 1;
   }
 
   @override
@@ -68,7 +69,7 @@ class _StandNewPageState extends State<StandNewPage> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
                   child: Text(
-                    'Créer un Festival',
+                    'Créer un Stand',
                     style: TextStyle(
                       fontFamily: 'Lexend Deca',
                       color: Color(0xFF090F13),
@@ -88,7 +89,7 @@ class _StandNewPageState extends State<StandNewPage> {
       body: SafeArea(
         child: Mutation(
             options:
-                MutationOptions(document: gql(GraphqlRequest().createFestival)
+                MutationOptions(document: gql(GraphqlRequest().createStands)
                     // this is the mutation string you just created
 
                     ),
@@ -96,12 +97,9 @@ class _StandNewPageState extends State<StandNewPage> {
               RunMutation runMutation,
               QueryResult? result,
             ) {
-
-
               if (result?.exception != null) {
                 return Text(result?.exception.toString() ?? "exception");
               }
-
 
               if (result?.data == null) {
                 return Column(
@@ -114,14 +112,14 @@ class _StandNewPageState extends State<StandNewPage> {
                         controller: festivalNameController,
                         obscureText: false,
                         decoration: InputDecoration(
-                          labelText: 'Nom du festival',
+                          labelText: 'Nom du stand',
                           labelStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                          hintText: 'Nom du festival',
+                          hintText: 'Nom du stand',
                           hintStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
@@ -159,84 +157,6 @@ class _StandNewPageState extends State<StandNewPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Date de debut du festival : ',
-                            ),
-                          ),
-                          Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime(2100, 6, 7),
-                                        onChanged: (date) {
-                                      dateDebut = date;
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      setState(() {
-                                        dateDebut = date;
-                                        print('confirm $date');
-                                      });
-                                    },
-                                        currentTime: dateDebut,
-                                        locale: LocaleType.fr);
-                                  },
-                                  child: Text(
-                                    '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ',
-                                    style: TextStyle(color: Colors.blue),
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Date de fin du festival : ',
-                            ),
-                          ),
-                          Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime(2100, 6, 7),
-                                        onChanged: (date) {
-                                      dateFin = date;
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      setState(() {
-                                        dateFin = date;
-                                        print('confirm $date');
-                                      });
-                                    },
-                                        currentTime: dateFin,
-                                        locale: LocaleType.fr);
-                                  },
-                                  child: Text(
-                                    '${dateFin.day.toString()}/${dateFin.month.toString()}/${dateFin.year.toString()} ',
-                                    style: TextStyle(color: Colors.blue),
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
                       child: TextFormField(
                         controller: localisationController,
@@ -249,7 +169,7 @@ class _StandNewPageState extends State<StandNewPage> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                          hintText: 'localisation du festival',
+                          hintText: 'localisation du stand',
                           hintStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
@@ -286,6 +206,68 @@ class _StandNewPageState extends State<StandNewPage> {
                         ),
                       ),
                     ),
+
+
+                        Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+
+                                Text("Festival Associer: "),
+
+                                Query(
+                                    options: QueryOptions(
+                                        fetchPolicy: FetchPolicy.cacheAndNetwork,
+                                        document:
+                                            gql(GraphqlRequest().getFestivalForStand)),
+                                    builder: (QueryResult result,
+                                        {VoidCallback? refetch, FetchMore? fetchMore}) {
+                                      if (result.hasException) {
+                                        return Text(result.exception.toString());
+                                      }
+
+                                      if (result.isLoading) {
+                                        return const Text('Loading');
+                                      }
+
+                                      log(result.data.toString());
+
+                                      if (result.data?["festivals"]?["data"] != null) {
+                                        var festivalList =
+                                            result.data?["festivals"]?["data"];
+
+
+
+
+                                        List<DropdownMenuItem<int>> festivalDropItem =
+                                            festivalList.map<DropdownMenuItem<int>>(
+                                                (i) => DropdownMenuItem<int>(
+                                                      value:
+                                                          int.parse(i["id"].toString()),
+                                                      child: Text(i["attributes"]
+                                                              ["name"]
+                                                          .toString()),
+                                                    )).toList();
+
+                                        return DropdownButton<int>(
+                                          value: dropdownValue,
+                                          items: festivalDropItem,
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              dropdownValue = newValue ?? 1;
+                                            });
+                                          },
+                                        );
+
+
+                                      }
+
+                                      return CircularProgressIndicator();
+                                    }),
+                              ],
+                            )),
+
                     Align(
                       alignment: AlignmentDirectional(0, 0.05),
                       child: Padding(
@@ -297,13 +279,12 @@ class _StandNewPageState extends State<StandNewPage> {
 
                             runMutation({
                               'name': festivalNameController.text,
-                              'date_start': DateFormat('yyyy-MM-dd').format(dateDebut),
-                              'date_end':  DateFormat('yyyy-MM-dd').format(dateFin),
-                              'localisation': localisationController.text
+                              'position': localisationController.text
+
                             });
                           },
                           child: Text(
-                            'Créer le festival',
+                            'Créer le stand',
                             style: TextStyle(
                               fontFamily: 'Lexend Deca',
                               color: Colors.white,
