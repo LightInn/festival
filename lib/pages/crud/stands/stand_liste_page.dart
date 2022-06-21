@@ -36,13 +36,11 @@ class _StandListePageState extends State<StandListePage> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: RefreshIndicator(
-
           onRefresh: () {
             setState(() {});
             throw StateError;
           },
           child: SingleChildScrollView(
-
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -76,39 +74,37 @@ class _StandListePageState extends State<StandListePage> {
                         List<Widget> festivalWidgetsList = festivalList
                             .map<Widget>(
                               (i) => Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16, 0, 16, 8),
                                 child: InkWell(
                                   onTap: () async {
-
-                                    WidgetsBinding.instance?.addPostFrameCallback((_) {
-                                       Navigator.pushReplacement(
+                                    WidgetsBinding.instance
+                                        ?.addPostFrameCallback((_) {
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => StandEditPage(
-                                              dateDebut: i["attributes"]
-                                              ?["date_start"]
-                                                  .toString() ??
-                                                  DateTime.now().toString(),
-                                              dateFin: i["attributes"]?["date_end"]
-                                                  .toString() ??
-                                                  DateTime.now().toString(),
-                                              festivalName: i["attributes"]?["name"]
-                                                  .toString() ??
+                                              festivalID: int.parse(
+                                                      i["attributes"]
+                                                                      ?[
+                                                                      "festival"]
+                                                                  ?[
+                                                                  "data"]?["id"]
+                                                              .toString() ??
+                                                          "1") ??
+                                                  1,
+                                              standName: i["attributes"]
+                                                          ?["name"]
+                                                      .toString() ??
                                                   "festival",
                                               localisation: i["attributes"]
-                                              ?["localisation"]
-                                                  .toString() ??
+                                                          ?["position"]
+                                                      .toString() ??
                                                   "Nantes",
                                               id: int.parse(i["id"]),
                                             ),
-                                          ))
-                                      ;
+                                          ));
                                     });
-
-
-
-
                                   },
                                   child: Container(
                                     width: double.infinity,
@@ -146,9 +142,8 @@ class _StandListePageState extends State<StandListePage> {
                                           ),
                                           Expanded(
                                             child: Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.fromSTEB(
-                                                      8, 8, 4, 0),
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(8, 8, 4, 0),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
@@ -164,21 +159,26 @@ class _StandListePageState extends State<StandListePage> {
                                                       fontFamily: 'Outfit',
                                                       color: Color(0xFF0F1113),
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   ),
                                                   Padding(
-                                                    padding: EdgeInsetsDirectional
-                                                        .fromSTEB(0, 4, 8, 0),
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                0, 4, 8, 0),
                                                     child: Text(
                                                       i["attributes"]
                                                                   ?["position"]
                                                               .toString() ??
                                                           '',
-                                                      textAlign: TextAlign.start,
+                                                      textAlign:
+                                                          TextAlign.start,
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
-                                                        color: Color(0xFF57636C),
+                                                        color:
+                                                            Color(0xFF57636C),
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.normal,
@@ -205,7 +205,6 @@ class _StandListePageState extends State<StandListePage> {
                                                   size: 24,
                                                 ),
                                               ),
-
                                             ],
                                           ),
                                         ],

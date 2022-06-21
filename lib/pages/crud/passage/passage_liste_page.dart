@@ -36,13 +36,11 @@ class _PassageListePageState extends State<PassageListePage> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: RefreshIndicator(
-
           onRefresh: () {
             setState(() {});
             throw StateError;
           },
           child: SingleChildScrollView(
-
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -57,7 +55,7 @@ class _PassageListePageState extends State<PassageListePage> {
                   child: Query(
                     options: QueryOptions(
                         fetchPolicy: FetchPolicy.cacheAndNetwork,
-                        document: gql(GraphqlRequest().publicData)),
+                        document: gql(GraphqlRequest().getAllPassages)),
                     builder: (QueryResult result,
                         {VoidCallback? refetch, FetchMore? fetchMore}) {
                       if (result.hasException) {
@@ -70,45 +68,43 @@ class _PassageListePageState extends State<PassageListePage> {
 
                       log(result.data.toString());
 
-                      if (result.data?["festivals"]?["data"] != null) {
-                        var festivalList = result.data?["festivals"]?["data"];
+                      if (result.data?["passages"]?["data"] != null) {
+                        var festivalList = result.data?["passages"]?["data"];
 
                         List<Widget> festivalWidgetsList = festivalList
                             .map<Widget>(
                               (i) => Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16, 0, 16, 8),
                                 child: InkWell(
                                   onTap: () async {
-
-                                    WidgetsBinding.instance?.addPostFrameCallback((_) {
-                                       Navigator.pushReplacement(
+                                    WidgetsBinding.instance
+                                        ?.addPostFrameCallback((_) {
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => PassageEditPage(
+                                            builder: (context) =>
+                                                PassageEditPage(
                                               dateDebut: i["attributes"]
-                                              ?["date_start"]
-                                                  .toString() ??
+                                                          ?["date_start"]
+                                                      .toString() ??
                                                   DateTime.now().toString(),
-                                              dateFin: i["attributes"]?["date_end"]
-                                                  .toString() ??
+                                              dateFin: i["attributes"]
+                                                          ?["date_end"]
+                                                      .toString() ??
                                                   DateTime.now().toString(),
-                                              festivalName: i["attributes"]?["name"]
-                                                  .toString() ??
+                                              festivalName: i["attributes"]
+                                                          ?["name"]
+                                                      .toString() ??
                                                   "festival",
                                               localisation: i["attributes"]
-                                              ?["localisation"]
-                                                  .toString() ??
+                                                          ?["localisation"]
+                                                      .toString() ??
                                                   "Nantes",
                                               id: int.parse(i["id"]),
                                             ),
-                                          ))
-                                      ;
+                                          ));
                                     });
-
-
-
-
                                   },
                                   child: Container(
                                     width: double.infinity,
@@ -146,9 +142,8 @@ class _PassageListePageState extends State<PassageListePage> {
                                           ),
                                           Expanded(
                                             child: Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.fromSTEB(
-                                                      8, 8, 4, 0),
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(8, 8, 4, 0),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
@@ -157,28 +152,47 @@ class _PassageListePageState extends State<PassageListePage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    i["attributes"]?["name"]
+                                                    i["attributes"]
+                                                                ?["date_start"]
                                                             .toString() ??
-                                                        'Festival Name',
+                                                        'date',
                                                     style: TextStyle(
                                                       fontFamily: 'Outfit',
                                                       color: Color(0xFF0F1113),
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   ),
                                                   Padding(
-                                                    padding: EdgeInsetsDirectional
-                                                        .fromSTEB(0, 4, 8, 0),
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                0, 4, 8, 0),
                                                     child: Text(
-                                                      i["attributes"]
-                                                                  ?["date_start"]
-                                                              .toString() ??
-                                                          'date',
-                                                      textAlign: TextAlign.start,
+                                                      (i["attributes"]?["stand"]
+                                                                              ?[
+                                                                              "data"]
+                                                                          ?[
+                                                                          "attributes"]
+                                                                      ?["name"]
+                                                                  .toString() ??
+                                                              'name') +
+                                                          " | " +
+                                                          (i["attributes"]?[
+                                                                              "artist"]
+                                                                          ?[
+                                                                          "data"]
+                                                                      ?[
+                                                                      "attributes"]?["name"]
+                                                                  .toString() ??
+                                                              'name'),
+                                                      textAlign:
+                                                          TextAlign.start,
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
-                                                        color: Color(0xFF57636C),
+                                                        color:
+                                                            Color(0xFF57636C),
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.normal,
@@ -209,15 +223,16 @@ class _PassageListePageState extends State<PassageListePage> {
                                                 padding: EdgeInsetsDirectional
                                                     .fromSTEB(0, 12, 4, 8),
                                                 child: Text(
-                                                  i["attributes"]?["date_end"]
+                                                  i["attributes"]?["duration"]
                                                           .toString() ??
-                                                      "nb_jour",
+                                                      "duration",
                                                   textAlign: TextAlign.end,
                                                   style: TextStyle(
                                                     fontFamily: 'Outfit',
                                                     color: Color(0xFF0F1113),
                                                     fontSize: 14,
-                                                    fontWeight: FontWeight.normal,
+                                                    fontWeight:
+                                                        FontWeight.normal,
                                                   ),
                                                 ),
                                               ),

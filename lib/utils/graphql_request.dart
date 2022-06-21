@@ -9,7 +9,6 @@ class GraphqlRequest {
   }
 }
   """;
-
   final String me = """
   query {
   me {
@@ -56,7 +55,6 @@ query GetFestivalsNotFinished {
 }
 
   """;
-
   final String createFestival = """
 mutation(
   \$name: String!
@@ -78,7 +76,6 @@ mutation(
   }
 }
   """;
-
   final String editFestival = """
 mutation(
   \$id: ID!
@@ -103,7 +100,6 @@ mutation(
 }
 
   """;
-
   final String deleteFestival = """
 mutation(\$id: ID!) {
   deleteFestival(id: \$id) {
@@ -262,4 +258,38 @@ mutation(\$id: ID!) {
 
 
   """;
+
+  // \
+
+  final String getAllPassages = """
+query GetAllPassages {
+  passages {
+    data {
+      id
+      attributes {
+        date_start
+        duration
+        stand {
+          data {
+            id
+            attributes {
+              name
+            }
+          }
+        }
+        artist {
+          data {
+            id
+            attributes {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+  """;
+
 }

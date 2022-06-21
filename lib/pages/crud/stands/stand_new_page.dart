@@ -206,68 +206,63 @@ class _StandNewPageState extends State<StandNewPage> {
                         ),
                       ),
                     ),
+                    Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text("Festival Associer: "),
+                            Query(
+                                options: QueryOptions(
+                                    fetchPolicy: FetchPolicy.cacheAndNetwork,
+                                    document: gql(
+                                        GraphqlRequest().getFestivalForStand)),
+                                builder: (QueryResult result,
+                                    {VoidCallback? refetch,
+                                    FetchMore? fetchMore}) {
+                                  if (result.hasException) {
+                                    return Text(result.exception.toString());
+                                  }
 
+                                  if (result.isLoading) {
+                                    return const Text('Loading');
+                                  }
 
-                        Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
+                                  log(result.data.toString());
 
-                                Text("Festival Associer: "),
+                                  if (result.data?["festivals"]?["data"] !=
+                                      null) {
+                                    var festivalList =
+                                        result.data?["festivals"]?["data"];
 
-                                Query(
-                                    options: QueryOptions(
-                                        fetchPolicy: FetchPolicy.cacheAndNetwork,
-                                        document:
-                                            gql(GraphqlRequest().getFestivalForStand)),
-                                    builder: (QueryResult result,
-                                        {VoidCallback? refetch, FetchMore? fetchMore}) {
-                                      if (result.hasException) {
-                                        return Text(result.exception.toString());
-                                      }
-
-                                      if (result.isLoading) {
-                                        return const Text('Loading');
-                                      }
-
-                                      log(result.data.toString());
-
-                                      if (result.data?["festivals"]?["data"] != null) {
-                                        var festivalList =
-                                            result.data?["festivals"]?["data"];
-
-
-
-
-                                        List<DropdownMenuItem<int>> festivalDropItem =
-                                            festivalList.map<DropdownMenuItem<int>>(
+                                    List<DropdownMenuItem<int>>
+                                        festivalDropItem = festivalList
+                                            .map<DropdownMenuItem<int>>(
                                                 (i) => DropdownMenuItem<int>(
-                                                      value:
-                                                          int.parse(i["id"].toString()),
-                                                      child: Text(i["attributes"]
-                                                              ["name"]
-                                                          .toString()),
-                                                    )).toList();
+                                                      value: int.parse(
+                                                          i["id"].toString()),
+                                                      child: Text(
+                                                          i["attributes"]
+                                                                  ["name"]
+                                                              .toString()),
+                                                    ))
+                                            .toList();
 
-                                        return DropdownButton<int>(
-                                          value: dropdownValue,
-                                          items: festivalDropItem,
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              dropdownValue = newValue ?? 1;
-                                            });
-                                          },
-                                        );
+                                    return DropdownButton<int>(
+                                      value: dropdownValue,
+                                      items: festivalDropItem,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          dropdownValue = newValue ?? 1;
+                                        });
+                                      },
+                                    );
+                                  }
 
-
-                                      }
-
-                                      return CircularProgressIndicator();
-                                    }),
-                              ],
-                            )),
-
+                                  return CircularProgressIndicator();
+                                }),
+                          ],
+                        )),
                     Align(
                       alignment: AlignmentDirectional(0, 0.05),
                       child: Padding(
@@ -279,8 +274,8 @@ class _StandNewPageState extends State<StandNewPage> {
 
                             runMutation({
                               'name': festivalNameController.text,
-                              'position': localisationController.text
-
+                              'position': localisationController.text,
+                              'festival': dropdownValue.toString()
                             });
                           },
                           child: Text(
