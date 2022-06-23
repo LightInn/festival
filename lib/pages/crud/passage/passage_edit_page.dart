@@ -13,17 +13,17 @@ import 'passage_liste_page.dart';
 class PassageEditPage extends StatefulWidget {
   final int id;
   final String dateDebut;
-  final String dateFin;
-  final String festivalName;
-  final String localisation;
+  final int duration;
+  final int stand;
+  final int artist;
 
   const PassageEditPage(
       {Key? key,
       required this.id,
       required this.dateDebut,
-      required this.dateFin,
-      required this.festivalName,
-      required this.localisation})
+      required this.duration,
+      required this.stand,
+      required this.artist})
       : super(key: key);
 
   @override
@@ -31,12 +31,12 @@ class PassageEditPage extends StatefulWidget {
 }
 
 class _PassageEditPageState extends State<PassageEditPage> {
+
   late DateTime dateDebut;
+  late TextEditingController durationController;
+  late int standValue;
+  late int artistValue;
 
-  late DateTime dateFin;
-
-  late TextEditingController festivalNameController;
-  late TextEditingController localisationController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -44,9 +44,12 @@ class _PassageEditPageState extends State<PassageEditPage> {
     super.initState();
 
     dateDebut = DateTime.parse(widget.dateDebut);
-    dateFin = DateTime.parse(widget.dateFin);
-    localisationController = TextEditingController(text: widget.localisation);
-    festivalNameController = TextEditingController(text: widget.festivalName);
+
+    durationController = TextEditingController(text: widget.duration.toString());
+    standValue = widget.stand;
+    artistValue = widget.artist;
+
+
   }
 
   @override
@@ -112,19 +115,59 @@ class _PassageEditPageState extends State<PassageEditPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Date de debut du passage : ',
+                    ),
+                  ),
+                  Padding(
+                      padding:
+                      EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                      child: OutlinedButton(
+                          onPressed: () {
+                            DatePicker.showDatePicker(context,
+                                showTitleActions: true,
+                                minTime: DateTime(1900, 3, 5),
+                                maxTime: DateTime(2100, 6, 7),
+                                onChanged: (date) {
+                                  dateDebut = date;
+                                  print('change $date');
+                                }, onConfirm: (date) {
+                                  setState(() {
+                                    dateDebut = date;
+                                    print('confirm $date');
+                                  });
+                                },
+                                currentTime: dateDebut,
+                                locale: LocaleType.fr);
+                          },
+                          child: Text(
+                            '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ${dateDebut.hour.toString()}:${dateDebut.minute.toString()}',
+                            style: TextStyle(color: Colors.blue),
+                          ))),
+                ],
+              ),
+            ),
+            Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
               child: TextFormField(
-                controller: festivalNameController,
+                controller: durationController,
                 obscureText: false,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Nom du festival',
+                  labelText: 'durée',
                   labelStyle: TextStyle(
                     fontFamily: 'Lexend Deca',
                     color: Color(0xFF95A1AC),
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
                   ),
-                  hintText: 'Nom du festival',
+                  hintText: 'durée du passage',
                   hintStyle: TextStyle(
                     fontFamily: 'Lexend Deca',
                     color: Color(0xFF95A1AC),
@@ -147,9 +190,10 @@ class _PassageEditPageState extends State<PassageEditPage> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+                  contentPadding:
+                  EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
                   prefixIcon: Icon(
-                    Icons.text_fields,
+                    Icons.timelapse,
                   ),
                 ),
                 style: TextStyle(
@@ -161,126 +205,118 @@ class _PassageEditPageState extends State<PassageEditPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Date de debut du festival : ',
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      child: OutlinedButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime(1900, 3, 5),
-                                maxTime: DateTime(2100, 6, 7),
-                                onChanged: (date) {
-                              dateDebut = date;
-                              print('change $date');
-                            }, onConfirm: (date) {
-                              setState(() {
-                                dateDebut = date;
-                                print('confirm $date');
-                              });
-                            }, currentTime: dateDebut, locale: LocaleType.fr);
-                          },
-                          child: Text(
-                            '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ',
-                            style: TextStyle(color: Colors.blue),
-                          ))),
-                ],
-              ),
-            ),
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("Stand Associer: "),
+                    Query(
+                        options: QueryOptions(
+                            fetchPolicy: FetchPolicy.cacheAndNetwork,
+                            document: gql(
+                                GraphqlRequest().getStandForPassage)),
+                        builder: (QueryResult result,
+                            {VoidCallback? refetch,
+                              FetchMore? fetchMore}) {
+                          if (result.hasException) {
+                            return Text(result.exception.toString());
+                          }
+
+                          if (result.isLoading) {
+                            return const Text('Loading');
+                          }
+
+                          log(result.data.toString());
+
+                          if (result.data?["stands"]?["data"] != null) {
+                            var standsList =
+                            result.data?["stands"]?["data"];
+
+                            List<DropdownMenuItem<int>> standsDropItem =
+                            standsList
+                                .map<DropdownMenuItem<int>>(
+                                    (i) => DropdownMenuItem<int>(
+                                  value: int.parse(
+                                      i["id"].toString()),
+                                  child: Text(
+                                      i["attributes"]
+                                      ["name"]
+                                          .toString()),
+                                ))
+                                .toList();
+
+                            return DropdownButton<int>(
+                              value: standValue,
+                              items: standsDropItem,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  standValue = newValue ?? 1;
+                                });
+                              },
+                            );
+                          }
+
+                          return CircularProgressIndicator();
+                        }),
+                  ],
+                )),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Date de fin du festival : ',
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      child: OutlinedButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime(1900, 3, 5),
-                                maxTime: DateTime(2100, 6, 7),
-                                onChanged: (date) {
-                              dateFin = date;
-                              print('change $date');
-                            }, onConfirm: (date) {
-                              setState(() {
-                                dateFin = date;
-                                print('confirm $date');
-                              });
-                            }, currentTime: dateFin, locale: LocaleType.fr);
-                          },
-                          child: Text(
-                            '${dateFin.day.toString()}/${dateFin.month.toString()}/${dateFin.year.toString()} ',
-                            style: TextStyle(color: Colors.blue),
-                          ))),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-              child: TextFormField(
-                controller: localisationController,
-                obscureText: false,
-                decoration: InputDecoration(
-                  labelText: 'Localisation',
-                  labelStyle: TextStyle(
-                    fontFamily: 'Lexend Deca',
-                    color: Color(0xFF95A1AC),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  hintText: 'localisation du festival',
-                  hintStyle: TextStyle(
-                    fontFamily: 'Lexend Deca',
-                    color: Color(0xFF95A1AC),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xFFF1F4F8),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xFFF1F4F8),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
-                  prefixIcon: Icon(
-                    Icons.location_pin,
-                  ),
-                ),
-                style: TextStyle(
-                  fontFamily: 'Lexend Deca',
-                  color: Color(0xFF090F13),
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("Artiste Associer: "),
+                    Query(
+                        options: QueryOptions(
+                            fetchPolicy: FetchPolicy.cacheAndNetwork,
+                            document: gql(
+                                GraphqlRequest().getArtistForPassage)),
+                        builder: (QueryResult result,
+                            {VoidCallback? refetch,
+                              FetchMore? fetchMore}) {
+                          if (result.hasException) {
+                            return Text(result.exception.toString());
+                          }
+
+                          if (result.isLoading) {
+                            return const Text('Loading');
+                          }
+
+                          log(result.data.toString());
+
+                          if (result.data?["artists"]?["data"] !=
+                              null) {
+                            var festivalList =
+                            result.data?["artists"]?["data"];
+
+                            List<DropdownMenuItem<int>>
+                            festivalDropItem = festivalList
+                                .map<DropdownMenuItem<int>>(
+                                    (i) => DropdownMenuItem<int>(
+                                  value: int.parse(
+                                      i["id"].toString()),
+                                  child: Text(
+                                      i["attributes"]
+                                      ["name"]
+                                          .toString()),
+                                ))
+                                .toList();
+
+                            return DropdownButton<int>(
+                              value: artistValue,
+                              items: festivalDropItem,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  artistValue = newValue ?? 1;
+                                });
+                              },
+                            );
+                          }
+
+                          return CircularProgressIndicator();
+                        }),
+                  ],
+                )),
             Align(
               alignment: AlignmentDirectional(0, 0.05),
               child: Row(
@@ -288,7 +324,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                 children: [
                   Mutation(
                       options: MutationOptions(
-                          document: gql(GraphqlRequest().deleteFestival)
+                          document: gql(GraphqlRequest().deletePassage)
                           // this is the mutation string you just created
 
                           ),
@@ -331,23 +367,18 @@ class _PassageEditPageState extends State<PassageEditPage> {
                         } else {
                           log(result?.data.toString() ?? "test");
 
-
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => PassageListePage()));
                           });
 
-
-
-
-
                           return const CircularProgressIndicator();
                         }
                       }),
                   Mutation(
                       options: MutationOptions(
-                          document: gql(GraphqlRequest().editFestival)
+                          document: gql(GraphqlRequest().editPassage)
                           // this is the mutation string you just created
 
                           ),
@@ -371,12 +402,12 @@ class _PassageEditPageState extends State<PassageEditPage> {
 
                                 runMutation({
                                   'id': widget.id,
-                                  'name': festivalNameController.text,
-                                  'date_start': DateFormat('yyyy-MM-dd')
-                                      .format(dateDebut),
-                                  'date_end':
-                                      DateFormat('yyyy-MM-dd').format(dateFin),
-                                  'localisation': localisationController.text
+                                  'dateStart': '${ DateFormat('yyyy-MM-dd').format(dateDebut)}T${ DateFormat('kk:mm:ss').format(dateDebut)}Z'
+                                  ,
+                                  'duration':
+                                  int.parse(durationController.text) ?? 0,
+                                  'stand': standValue,
+                                  'artist': artistValue
                                 });
                               },
                               child: Text(

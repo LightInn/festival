@@ -89,11 +89,11 @@ class _PassageListePageState extends State<PassageListePage> {
                                                           ?["date_start"]
                                                       .toString() ??
                                                   DateTime.now().toString(),
-                                              dateFin: i["attributes"]
-                                                          ?["date_end"]
+                                              duration: i["attributes"]
+                                                          ?["duration"]
                                                       .toString() ??
-                                                  DateTime.now().toString(),
-                                              festivalName: i["attributes"]
+                                                  "0",
+                                              stand: i["attributes"]
                                                           ?["name"]
                                                       .toString() ??
                                                   "festival",

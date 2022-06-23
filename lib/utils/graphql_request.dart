@@ -260,7 +260,6 @@ mutation(\$id: ID!) {
   """;
 
   // \
-
   final String getAllPassages = """
 query GetAllPassages {
   passages {
@@ -291,5 +290,80 @@ query GetAllPassages {
 }
 
   """;
+  final String createPassage = """
+mutation(\$dateStart: DateTime!, \$duration: Int!, \$stand: ID!, \$artist: ID!) {
+  createPassage(
+    data: {
+      date_start: \$dateStart
+      duration: \$duration
+      stand: \$stand
+      artist: \$artist
+      sitemap_exclude: false
+    }
+  ) {
+    data {
+      id
+    }
+  }
+}
+
+  """;
+  final String getStandForPassage = """
+query getStandForPassage {
+  stands {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+  """;
+  final String getArtistForPassage = """
+query getArtistForPassage {
+  artists {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+  """;
+  final String editPassage = """
+mutation(\$id: ID!,\$dateStart: DateTime!, \$duration: Int!, \$stand: ID!, \$artist: ID!) {
+  updatePassage(
+    id: \$id
+    data: {      date_start: \$dateStart
+      duration: \$duration
+      stand: \$stand
+      artist: \$artist
+      sitemap_exclude: false }
+  ) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+  final String deletePassage = """
+mutation(\$id: ID!) {
+  deletePassage(id: \$id) {
+    data {
+      id
+    }
+  }
+}
+
+
+  """;
+
+
 
 }

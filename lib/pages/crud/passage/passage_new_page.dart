@@ -16,16 +16,18 @@ class PassageNewPage extends StatefulWidget {
 
 class _PassageNewPageState extends State<PassageNewPage> {
   late DateTime dateDebut = DateTime.now();
-  late DateTime dateFin = DateTime.now();
-  late TextEditingController festivalNameController;
-  late TextEditingController localisationController;
+  late TextEditingController durationController;
+  late int standValue;
+  late int artistValue;
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    localisationController = TextEditingController(text: 'Nantes');
-    festivalNameController = TextEditingController(text: 'Festival');
+    durationController = TextEditingController(text: '45');
+    standValue = 1;
+    artistValue = 1;
   }
 
   @override
@@ -68,7 +70,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
                   child: Text(
-                    'Créer un Festival',
+                    'Créer un Passage',
                     style: TextStyle(
                       fontFamily: 'Lexend Deca',
                       color: Color(0xFF090F13),
@@ -88,7 +90,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
       body: SafeArea(
         child: Mutation(
             options:
-                MutationOptions(document: gql(GraphqlRequest().createFestival)
+                MutationOptions(document: gql(GraphqlRequest().createPassage)
                     // this is the mutation string you just created
 
                     ),
@@ -96,68 +98,15 @@ class _PassageNewPageState extends State<PassageNewPage> {
               RunMutation runMutation,
               QueryResult? result,
             ) {
-
-
               if (result?.exception != null) {
                 return Text(result?.exception.toString() ?? "exception");
               }
-
 
               if (result?.data == null) {
                 return Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-                      child: TextFormField(
-                        controller: festivalNameController,
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          labelText: 'Nom du festival',
-                          labelStyle: TextStyle(
-                            fontFamily: 'Lexend Deca',
-                            color: Color(0xFF95A1AC),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          hintText: 'Nom du festival',
-                          hintStyle: TextStyle(
-                            fontFamily: 'Lexend Deca',
-                            color: Color(0xFF95A1AC),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xFFF1F4F8),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xFFF1F4F8),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding:
-                              EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
-                          prefixIcon: Icon(
-                            Icons.text_fields,
-                          ),
-                        ),
-                        style: TextStyle(
-                          fontFamily: 'Lexend Deca',
-                          color: Color(0xFF090F13),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
                       child: Row(
@@ -166,7 +115,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Date de debut du festival : ',
+                              'Date de debut du passage : ',
                             ),
                           ),
                           Padding(
@@ -191,46 +140,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                                         locale: LocaleType.fr);
                                   },
                                   child: Text(
-                                    '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ',
-                                    style: TextStyle(color: Colors.blue),
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 10, 24, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Date de fin du festival : ',
-                            ),
-                          ),
-                          Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime(2100, 6, 7),
-                                        onChanged: (date) {
-                                      dateFin = date;
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      setState(() {
-                                        dateFin = date;
-                                        print('confirm $date');
-                                      });
-                                    },
-                                        currentTime: dateFin,
-                                        locale: LocaleType.fr);
-                                  },
-                                  child: Text(
-                                    '${dateFin.day.toString()}/${dateFin.month.toString()}/${dateFin.year.toString()} ',
+                                    '${dateDebut.day.toString()}/${dateDebut.month.toString()}/${dateDebut.year.toString()} ${dateDebut.hour.toString()}:${dateDebut.minute.toString()}',
                                     style: TextStyle(color: Colors.blue),
                                   ))),
                         ],
@@ -239,17 +149,18 @@ class _PassageNewPageState extends State<PassageNewPage> {
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
                       child: TextFormField(
-                        controller: localisationController,
+                        controller: durationController,
                         obscureText: false,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Localisation',
+                          labelText: 'durée',
                           labelStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                          hintText: 'localisation du festival',
+                          hintText: 'durée du passage',
                           hintStyle: TextStyle(
                             fontFamily: 'Lexend Deca',
                             color: Color(0xFF95A1AC),
@@ -275,7 +186,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                           contentPadding:
                               EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
                           prefixIcon: Icon(
-                            Icons.location_pin,
+                            Icons.timelapse,
                           ),
                         ),
                         style: TextStyle(
@@ -286,6 +197,119 @@ class _PassageNewPageState extends State<PassageNewPage> {
                         ),
                       ),
                     ),
+                    Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text("Stand Associer: "),
+                            Query(
+                                options: QueryOptions(
+                                    fetchPolicy: FetchPolicy.cacheAndNetwork,
+                                    document: gql(
+                                        GraphqlRequest().getStandForPassage)),
+                                builder: (QueryResult result,
+                                    {VoidCallback? refetch,
+                                    FetchMore? fetchMore}) {
+                                  if (result.hasException) {
+                                    return Text(result.exception.toString());
+                                  }
+
+                                  if (result.isLoading) {
+                                    return const Text('Loading');
+                                  }
+
+                                  log(result.data.toString());
+
+                                  if (result.data?["stands"]?["data"] != null) {
+                                    var standsList =
+                                        result.data?["stands"]?["data"];
+
+                                    List<DropdownMenuItem<int>> standsDropItem =
+                                        standsList
+                                            .map<DropdownMenuItem<int>>(
+                                                (i) => DropdownMenuItem<int>(
+                                                      value: int.parse(
+                                                          i["id"].toString()),
+                                                      child: Text(
+                                                          i["attributes"]
+                                                                  ["name"]
+                                                              .toString()),
+                                                    ))
+                                            .toList();
+
+                                    return DropdownButton<int>(
+                                      value: standValue,
+                                      items: standsDropItem,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          standValue = newValue ?? 1;
+                                        });
+                                      },
+                                    );
+                                  }
+
+                                  return CircularProgressIndicator();
+                                }),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text("Artiste Associer: "),
+                            Query(
+                                options: QueryOptions(
+                                    fetchPolicy: FetchPolicy.cacheAndNetwork,
+                                    document: gql(
+                                        GraphqlRequest().getArtistForPassage)),
+                                builder: (QueryResult result,
+                                    {VoidCallback? refetch,
+                                    FetchMore? fetchMore}) {
+                                  if (result.hasException) {
+                                    return Text(result.exception.toString());
+                                  }
+
+                                  if (result.isLoading) {
+                                    return const Text('Loading');
+                                  }
+
+                                  log(result.data.toString());
+
+                                  if (result.data?["artists"]?["data"] !=
+                                      null) {
+                                    var festivalList =
+                                        result.data?["artists"]?["data"];
+
+                                    List<DropdownMenuItem<int>>
+                                        festivalDropItem = festivalList
+                                            .map<DropdownMenuItem<int>>(
+                                                (i) => DropdownMenuItem<int>(
+                                                      value: int.parse(
+                                                          i["id"].toString()),
+                                                      child: Text(
+                                                          i["attributes"]
+                                                                  ["name"]
+                                                              .toString()),
+                                                    ))
+                                            .toList();
+
+                                    return DropdownButton<int>(
+                                      value: artistValue,
+                                      items: festivalDropItem,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          artistValue = newValue ?? 1;
+                                        });
+                                      },
+                                    );
+                                  }
+
+                                  return CircularProgressIndicator();
+                                }),
+                          ],
+                        )),
                     Align(
                       alignment: AlignmentDirectional(0, 0.05),
                       child: Padding(
@@ -296,14 +320,16 @@ class _PassageNewPageState extends State<PassageNewPage> {
                             print('Button pressed ...');
 
                             runMutation({
-                              'name': festivalNameController.text,
-                              'date_start': DateFormat('yyyy-MM-dd').format(dateDebut),
-                              'date_end':  DateFormat('yyyy-MM-dd').format(dateFin),
-                              'localisation': localisationController.text
+                              'dateStart': '${ DateFormat('yyyy-MM-dd').format(dateDebut)}T${ DateFormat('kk:mm:ss').format(dateDebut)}Z'
+                                 ,
+                              'duration':
+                                  int.parse(durationController.text) ?? 0,
+                              'stand': standValue,
+                              'artist': artistValue
                             });
                           },
                           child: Text(
-                            'Créer le festival',
+                            'Créer le passage',
                             style: TextStyle(
                               fontFamily: 'Lexend Deca',
                               color: Colors.white,
