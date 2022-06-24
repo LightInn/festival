@@ -228,7 +228,7 @@ class _StandNewPageState extends State<StandNewPage> {
                                     return const Text('Loading');
                                   }
 
-                                  log(result.data.toString());
+
 
                                   if (result.data?["festivals"]?["data"] !=
                                       null) {
@@ -293,7 +293,7 @@ class _StandNewPageState extends State<StandNewPage> {
                   ],
                 );
               } else {
-                log(result?.data.toString() ?? "test");
+
 
                 Navigator.of(context).pop();
 

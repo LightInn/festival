@@ -219,7 +219,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                                     return const Text('Loading');
                                   }
 
-                                  log(result.data.toString());
+
 
                                   if (result.data?["stands"]?["data"] != null) {
                                     var standsList =
@@ -275,7 +275,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                                     return const Text('Loading');
                                   }
 
-                                  log(result.data.toString());
+
 
                                   if (result.data?["artists"]?["data"] !=
                                       null) {
@@ -323,7 +323,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                               'dateStart': '${ DateFormat('yyyy-MM-dd').format(dateDebut)}T${ DateFormat('kk:mm:ss').format(dateDebut)}Z'
                                  ,
                               'duration':
-                                  int.parse(durationController.text) ?? 0,
+                                  int.parse(durationController.text),
                               'stand': standValue,
                               'artist': artistValue
                             });
@@ -343,7 +343,7 @@ class _PassageNewPageState extends State<PassageNewPage> {
                   ],
                 );
               } else {
-                log(result?.data.toString() ?? "test");
+
 
                 Navigator.of(context).pop();
 

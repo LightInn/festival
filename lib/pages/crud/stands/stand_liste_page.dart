@@ -66,7 +66,7 @@ class _StandListePageState extends State<StandListePage> {
                         return const Text('Loading');
                       }
 
-                      log(result.data.toString());
+
 
                       if (result.data?["stands"]?["data"] != null) {
                         var festivalList = result.data?["stands"]?["data"];
@@ -91,8 +91,7 @@ class _StandListePageState extends State<StandListePage> {
                                                                   ?[
                                                                   "data"]?["id"]
                                                               .toString() ??
-                                                          "1") ??
-                                                  1,
+                                                          "1"),
                                               standName: i["attributes"]
                                                           ?["name"]
                                                       .toString() ??

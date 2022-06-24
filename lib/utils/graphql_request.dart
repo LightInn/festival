@@ -30,16 +30,22 @@ query GetFestivalsNotFinished {
         localisation,
         stands {
           data {
+            id,
             attributes {
-              name
+              name,
+              position
 
               passages {
                 data {
+                  id,
                   attributes {
+                    date_start,
+                    duration,
                     artist {
                       data {
                         attributes {
-                          name
+                          name,
+                          description
                         }
                       }
                     }

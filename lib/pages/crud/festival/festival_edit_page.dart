@@ -329,7 +329,7 @@ class _FestivalEditPageState extends State<FestivalEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -391,7 +391,7 @@ class _FestivalEditPageState extends State<FestivalEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(

@@ -68,7 +68,7 @@ class _FestivalListePageState extends State<FestivalListePage> {
                         return const Text('Loading');
                       }
 
-                      log(result.data.toString());
+
 
                       if (result.data?["festivals"]?["data"] != null) {
                         var festivalList = result.data?["festivals"]?["data"];

@@ -66,7 +66,7 @@ class _PassageListePageState extends State<PassageListePage> {
                         return const Text('Loading');
                       }
 
-                      log(result.data.toString());
+
 
                       if (result.data?["passages"]?["data"] != null) {
                         var festivalList = result.data?["passages"]?["data"];
@@ -90,18 +90,16 @@ class _PassageListePageState extends State<PassageListePage> {
                                                       .toString() ??
                                                   DateTime.now().toString(),
                                               duration: i["attributes"]
-                                                          ?["duration"]
-                                                      .toString() ??
-                                                  "0",
-                                              stand: i["attributes"]
-                                                          ?["name"]
-                                                      .toString() ??
-                                                  "festival",
-                                              localisation: i["attributes"]
-                                                          ?["localisation"]
-                                                      .toString() ??
-                                                  "Nantes",
-                                              id: int.parse(i["id"]),
+                                                  ?["duration"],
+                                              stand: int.parse(i["attributes"]
+                                                          ?["stand"]?["data"]
+                                                      ?["id"] ??
+                                                  "1"),
+                                              artist: int.parse(i["attributes"]
+                                                          ?["artist"]?["data"]
+                                                      ?["id"] ??
+                                                  "1"),
+                                              id: int.parse(i["id"] ?? "1"),
                                             ),
                                           ));
                                     });

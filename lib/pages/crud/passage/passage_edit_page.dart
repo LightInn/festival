@@ -130,7 +130,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                       EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
                       child: OutlinedButton(
                           onPressed: () {
-                            DatePicker.showDatePicker(context,
+                            DatePicker.showDateTimePicker(context,
                                 showTitleActions: true,
                                 minTime: DateTime(1900, 3, 5),
                                 maxTime: DateTime(2100, 6, 7),
@@ -226,7 +226,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                             return const Text('Loading');
                           }
 
-                          log(result.data.toString());
+
 
                           if (result.data?["stands"]?["data"] != null) {
                             var standsList =
@@ -282,7 +282,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                             return const Text('Loading');
                           }
 
-                          log(result.data.toString());
+
 
                           if (result.data?["artists"]?["data"] !=
                               null) {
@@ -365,7 +365,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(
@@ -387,6 +387,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                         QueryResult? result,
                       ) {
                         if (result?.exception != null) {
+                          log(result?.exception.toString() ?? "exception");
                           return Text(
                               result?.exception.toString() ?? "exception");
                         }
@@ -402,10 +403,10 @@ class _PassageEditPageState extends State<PassageEditPage> {
 
                                 runMutation({
                                   'id': widget.id,
-                                  'dateStart': '${ DateFormat('yyyy-MM-dd').format(dateDebut)}T${ DateFormat('kk:mm:ss').format(dateDebut)}Z'
+                                  'dateStart': '${ DateFormat('yyyy-MM-dd').format(dateDebut)}T${ DateFormat('kk:mm:ss').format(dateDebut)}.000Z'
                                   ,
                                   'duration':
-                                  int.parse(durationController.text) ?? 0,
+                                  int.parse(durationController.text),
                                   'stand': standValue,
                                   'artist': artistValue
                                 });
@@ -422,7 +423,7 @@ class _PassageEditPageState extends State<PassageEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(

@@ -317,7 +317,7 @@ class _FestivalNewPageState extends State<FestivalNewPage> {
                   ],
                 );
               } else {
-                log(result?.data.toString() ?? "test");
+
 
                 Navigator.of(context).pop();
 

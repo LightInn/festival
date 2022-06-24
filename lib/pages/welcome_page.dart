@@ -7,6 +7,7 @@ import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 import '../utils/graphql_request.dart';
 import '../utils/jwt_token.dart';
+import 'festival_detail_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -19,7 +20,8 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Colors.white,
+      // backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -36,8 +38,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 if (result.isLoading) {
                   return const Text('Loading');
                 }
-
-                log(result.data.toString());
 
                 if (result.data?["me"]?["role"]?["name"] == "Admin") {
                   return Row(
@@ -86,8 +86,6 @@ class _WelcomePageState extends State<WelcomePage> {
                       return const Text('Loading');
                     }
 
-                    log(result.data.toString());
-
                     if (result.data?["festivals"]?["data"] != null) {
                       var festivalList = result.data?["festivals"]?["data"];
 
@@ -100,21 +98,24 @@ class _WelcomePageState extends State<WelcomePage> {
 
                       List<Widget> festivalWidgetsList = festivalList
                           .map<Widget>((i) => Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 30),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 30),
-                                decoration: BoxDecoration(
-                                    color: Color((math.Random().nextDouble() *
-                                                0xFFFFFF)
-                                            .toInt())
-                                        .withOpacity(1.0),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Text(
-                                    i["attributes"]?["name"].toString() ??
-                                        "name"),
-                              ))
+                              clipBehavior: Clip.hardEdge,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              decoration: BoxDecoration(
+                                  color:
+                                      Color((((i["attributes"]?["name"].toString() ?? "name").codeUnitAt(0) * 3 / 530) * 0xFFFFFF).toInt())
+                                          .withOpacity(1.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: festivalCard(
+                                  i["attributes"]?["date_start"].toString() ??
+                                      "date_start",
+                                  i["attributes"]?["date_end"].toString() ??
+                                      "date_end",
+                                  i["attributes"]?["localisation"].toString() ??
+                                      "localisation")))
                           .toList();
 
                       return VerticalCardPager(
@@ -131,8 +132,15 @@ class _WelcomePageState extends State<WelcomePage> {
                             // optional
                           },
                           onSelectedItem: (index) {
-                            Navigator.of(context).pushNamed("/register");
-
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FestivalDetailPage(
+                                        festivalId: festivalList[index]["id"]
+                                            .toString(),
+                                        StandList: festivalList[index]
+                                                ?["attributes"]?["stands"]
+                                            ?["data"])));
                             // optional
                           },
                           initialPage: festivalNamesList.length,
@@ -149,6 +157,17 @@ class _WelcomePageState extends State<WelcomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  festivalCard(String start, String end, String localisation) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("Du ${start} au ${end}"),
+        Text("a ${localisation}"),
+      ],
     );
   }
 }

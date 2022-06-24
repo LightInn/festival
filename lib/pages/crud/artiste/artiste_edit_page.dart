@@ -248,7 +248,7 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -306,7 +306,7 @@ class _ArtisteEditPageState extends State<ArtisteEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(

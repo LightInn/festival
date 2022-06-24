@@ -235,7 +235,7 @@ class _ArtisteNewPageState extends State<ArtisteNewPage> {
                   ],
                 );
               } else {
-                log(result?.data.toString() ?? "test");
+
 
                 Navigator.of(context).pop();
 

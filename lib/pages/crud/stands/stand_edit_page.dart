@@ -225,7 +225,7 @@ class _StandEditPageState extends State<StandEditPage> {
                             return const Text('Loading');
                           }
 
-                          log(result.data.toString());
+
 
                           if (result.data?["festivals"]?["data"] != null) {
                             var festivalList =
@@ -304,7 +304,7 @@ class _StandEditPageState extends State<StandEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(
@@ -358,7 +358,7 @@ class _StandEditPageState extends State<StandEditPage> {
                             ),
                           );
                         } else {
-                          log(result?.data.toString() ?? "test");
+
 
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             Navigator.of(context).pushReplacement(
